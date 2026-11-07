@@ -15,7 +15,7 @@ export const invitacion = {
   fechaLimiteRsvp: "13 de enero",
 
   padres: {
-    novia: ["Andrea Orozco Álvarez", "Jorge Alberto Pérez Quintana"],
+    novia: ["Jorge Alberto Pérez Quintana", "Andrea Orozco Álvarez"],
     novio: ["Jesús Pablo Garay Torres †", "Olga López Rodríguez"],
   },
 
