@@ -36,12 +36,13 @@ export const invitacion = {
     inspiracionEllos: "https://mx.pinterest.com/pin/777856166934025371/",
   },
 
-  regalos: [
-    {
-      titulo: "Lluvia de sobres",
-      detalle: "El día del evento, o por transferencia:\nBBVA · CLABE 012180015153629862\nJuan Pablo Garay López",
-    },
-  ],
+  regalo: {
+    titulo: "Lluvia de sobres",
+    nota: "El día del evento, o por transferencia:",
+    banco: "BBVA",
+    clabe: "012180015153629862",
+    titular: "Juan Pablo Garay López",
+  },
 
   hospedaje: [
     {

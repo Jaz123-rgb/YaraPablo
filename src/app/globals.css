@@ -300,17 +300,72 @@ input:focus, textarea:focus, select:focus {
 
 /* ---------- Regalos ---------- */
 
-.regalos { gap: 24px; }
-.regalos .section-title { max-width: 640px; font-size: clamp(30px, 3.6vw, 42px); line-height: 1.25; }
-.regalos .card {
-  border: 1px solid rgba(241, 235, 225, 0.35);
-  padding: 36px 28px;
+/* Dos fotos encimadas a un lado y los datos dentro de un sobre con sello al otro. */
+.regalos { padding: var(--section-y) var(--gutter); }
+.regalos-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 64px 88px;
 }
-.regalos .card h3 { font-size: 26px; }
-.regalos .card p { color: var(--cream-soft); white-space: pre-line; }
-.regalos .cards { max-width: 480px; }
+.regalos-fotos { position: relative; flex: 1 1 400px; min-width: 0; max-width: 520px; padding-bottom: 56px; }
+.regalos-foto-principal { display: block; width: 80%; height: auto; }
+.regalos-foto-secundaria {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 46%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  object-position: 50% 62%;
+  border: 8px solid var(--night);
+}
+.regalos-texto { flex: 1 1 400px; min-width: 0; max-width: 480px; display: flex; flex-direction: column; gap: 16px; }
+.regalos .section-title { font-size: clamp(30px, 3.2vw, 40px); line-height: 1.25; text-wrap: balance; }
+
+.sobre { position: relative; margin-top: 16px; background: var(--sand); color: var(--ink); text-align: center; }
+.sobre-solapa { position: absolute; top: 0; left: 0; display: block; width: 100%; height: 88px; }
+.sobre-solapa path { fill: var(--cream-soft); stroke: rgba(42, 38, 34, 0.35); stroke-width: 1; }
+.sobre-sello {
+  position: absolute;
+  top: 54px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 68px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--night);
+  box-shadow: 0 0 0 3px var(--night), inset 0 0 0 1px var(--cream-muted);
+  color: var(--cream);
+  font-size: 19px;
+}
+.sobre-contenido { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 138px 24px 32px; }
+.sobre-contenido h3 { margin: 0; font-size: clamp(36px, 4vw, 44px); line-height: 1.15; }
+.sobre-nota { margin: 0; font-size: 13px; line-height: 1.7; color: var(--ink-soft); }
+.sobre-clabe {
+  margin: 6px 0;
+  font-size: clamp(16px, 5vw, 22px);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  user-select: all;
+}
+.sobre-copiar {
+  margin-top: 10px;
+  border: 0;
+  background: var(--night);
+  color: var(--cream);
+  font-family: inherit;
+  cursor: pointer;
+}
+.sobre-copiar:hover { background: var(--ink-soft); }
+.sobre-copiar:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
 /* ---------- Hospedaje ---------- */
 
