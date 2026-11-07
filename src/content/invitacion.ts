@@ -77,6 +77,4 @@ export const invitacion = {
   },
 
   cancion: { youtubeId: "-D_CivXVjzg", titulo: "Majo y Dan - Somos" },
-
-  maxAsistentes: 4,
 };

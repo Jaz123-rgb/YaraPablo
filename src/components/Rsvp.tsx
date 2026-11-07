@@ -2,23 +2,32 @@
 
 import { useState } from "react";
 import { invitacion } from "@/content/invitacion";
+import type { Invitado } from "@/content/invitados";
 import { crearAudio, lanzarConfeti, sonarBuuu } from "@/lib/reaccionRsvp";
 
 type Asistencia = "si" | "no" | null;
 
-export default function Rsvp() {
-  const [nombre, setNombre] = useState("");
+export default function Rsvp({ invitado, opciones }: { invitado: Invitado | null; opciones: Invitado[] }) {
+  const [slug, setSlug] = useState(invitado?.slug ?? "");
   const [asistencia, setAsistencia] = useState<Asistencia>(null);
-  const [asistentes, setAsistentes] = useState("1");
+  const [asistentes, setAsistentes] = useState(String(invitado?.lugares ?? 1));
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
   const [enviado, setEnviado] = useState(false);
 
+  const elegido = invitado ?? opciones.find((o) => o.slug === slug);
+  const maxLugares = elegido?.lugares ?? 1;
+  const n = Number(asistentes) || 1;
+
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
-    if (!nombre.trim() || !asistencia) {
-      setError("Por favor escribe tu nombre y elige si nos acompañas.");
+    if (!elegido || !asistencia) {
+      setError(
+        invitado
+          ? "Por favor elige si nos acompañas."
+          : "Por favor elige tu invitación y si nos acompañas.",
+      );
       return;
     }
     setEnviando(true);
@@ -29,9 +38,9 @@ export default function Rsvp() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          nombre: nombre.trim(),
+          slug: elegido.slug,
           asistencia,
-          asistentes: asistencia === "si" ? Number(asistentes) : 0,
+          asistentes: asistencia === "si" ? n : 0,
           mensaje: mensaje.trim(),
         }),
       });
@@ -47,19 +56,21 @@ export default function Rsvp() {
     }
   }
 
-  const n = Number(asistentes) || 1;
-  const primerNombre = nombre.trim().split(" ")[0];
-
   return (
     <section id="rsvp" className="section rsvp">
       <h2 className="script">Confirma tu asistencia</h2>
       <p className="body-text">
         Agradeceremos tu respuesta antes del {invitacion.fechaLimiteRsvp}.
       </p>
+      {invitado && (
+        <p className="rsvp-invitado serif">
+          {invitado.nombre} · {invitado.lugares} {invitado.lugares === 1 ? "lugar reservado" : "lugares reservados"}
+        </p>
+      )}
 
       {enviado ? (
         <div role="status" className="rsvp-gracias">
-          <p className="serif">¡Gracias, {primerNombre}!</p>
+          <p className="serif">¡Gracias!</p>
           <p>
             {asistencia === "si"
               ? `Recibimos tu confirmación para ${n} ${n === 1 ? "persona" : "personas"}. ¡Nos vemos en la fiesta!`
@@ -68,17 +79,26 @@ export default function Rsvp() {
         </div>
       ) : (
         <form className="rsvp-form" onSubmit={enviar} noValidate>
-          <div className="rsvp-campo">
-            <label htmlFor="rsvp-nombre">Nombre completo</label>
-            <input
-              id="rsvp-nombre"
-              type="text"
-              className="rsvp-input"
-              placeholder="Como aparece en tu invitación"
-              value={nombre}
-              onChange={(e) => { setNombre(e.target.value); setError(null); }}
-            />
-          </div>
+          {!invitado && (
+            <div className="rsvp-campo">
+              <label htmlFor="rsvp-invitacion">Tu invitación</label>
+              <select
+                id="rsvp-invitacion"
+                className="rsvp-input"
+                value={slug}
+                onChange={(e) => {
+                  setSlug(e.target.value);
+                  setAsistentes(String(opciones.find((o) => o.slug === e.target.value)?.lugares ?? 1));
+                  setError(null);
+                }}
+              >
+                <option value="">Busca tu nombre o tu familia</option>
+                {opciones.map((o) => (
+                  <option key={o.slug} value={o.slug}>{o.nombre}</option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <fieldset className="rsvp-campo">
             <legend>¿Nos acompañas?</legend>
@@ -111,7 +131,7 @@ export default function Rsvp() {
                 value={asistentes}
                 onChange={(e) => setAsistentes(e.target.value)}
               >
-                {Array.from({ length: invitacion.maxAsistentes }, (_, i) => i + 1).map((v) => (
+                {Array.from({ length: maxLugares }, (_, i) => i + 1).map((v) => (
                   <option key={v} value={v}>{v} {v === 1 ? "persona" : "personas"}</option>
                 ))}
               </select>

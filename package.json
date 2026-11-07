@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
     "canvas-confetti": "^1.9.4",
     "next": "^16.4.5",
     "react": "^19.3.1",

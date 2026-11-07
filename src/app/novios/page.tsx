@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { invitacion } from "@/content/invitacion";
+import { invitados } from "@/content/invitados";
 import { leerConfirmaciones } from "@/lib/confirmaciones";
 import { COOKIE_PANEL, sesionValida } from "@/lib/panelAuth";
 import { entrar, salir } from "./actions";
@@ -17,7 +18,10 @@ const filtros = [
   { id: "todos", etiqueta: "Todos" },
   { id: "si", etiqueta: "Asisten" },
   { id: "no", etiqueta: "No asisten" },
+  { id: "pendiente", etiqueta: "Pendientes" },
 ];
+
+const etiquetasEstado: Record<string, string> = { si: "Asiste", no: "No asiste", pendiente: "Pendiente" };
 
 const formatoFecha = new Intl.DateTimeFormat("es-MX", {
   day: "numeric",
@@ -51,15 +55,30 @@ export default async function PanelNovios({
   }
 
   const confirmaciones = await leerConfirmaciones();
+  const respondieron = new Set(confirmaciones.map((c) => c.clave));
   const asisten = confirmaciones.filter((c) => c.asistencia === "si");
   const noAsisten = confirmaciones.length - asisten.length;
   const personas = asisten.reduce((total, c) => total + c.asistentes, 0);
-  const visibles = confirmaciones.filter((c) => filtro === "todos" || c.asistencia === filtro);
+  const lugares = invitados.reduce((total, i) => total + i.lugares, 0);
+
+  const filas = [
+    ...confirmaciones.map((c) => ({
+      ...c,
+      estado: c.asistencia as string,
+      lugares: invitados.find((i) => i.slug === c.clave)?.lugares,
+    })),
+    ...invitados
+      .filter((i) => !respondieron.has(i.slug))
+      .map((i) => ({ clave: i.slug, nombre: i.nombre, estado: "pendiente", asistentes: 0, lugares: i.lugares, mensaje: "", fecha: "" })),
+  ];
+  const visibles = filas.filter((f) => filtro === "todos" || f.estado === filtro);
+  const pendientes = filas.filter((f) => f.estado === "pendiente").length;
 
   const resumen = [
-    { valor: personas, etiqueta: "Personas confirmadas" },
-    { valor: asisten.length, etiqueta: "Respuestas: asisten" },
-    { valor: noAsisten, etiqueta: "Respuestas: no asisten" },
+    { valor: `${personas}/${lugares}`, etiqueta: "Personas confirmadas" },
+    { valor: asisten.length, etiqueta: "Invitaciones: asisten" },
+    { valor: noAsisten, etiqueta: "Invitaciones: no asisten" },
+    { valor: pendientes, etiqueta: "Invitaciones pendientes" },
   ];
 
   return (
@@ -112,17 +131,18 @@ export default async function PanelNovios({
                 </tr>
               </thead>
               <tbody>
-                {visibles.map((c) => (
-                  <tr key={c.nombre + c.fecha}>
-                    <td className="serif panel-nombre">{c.nombre}</td>
+                {visibles.map((f) => (
+                  <tr key={f.clave}>
+                    <td className="serif panel-nombre">{f.nombre}</td>
                     <td>
-                      <span className={`panel-estado panel-estado-${c.asistencia}`}>
-                        {c.asistencia === "si" ? "Asiste" : "No asiste"}
-                      </span>
+                      <span className={`panel-estado panel-estado-${f.estado}`}>{etiquetasEstado[f.estado]}</span>
                     </td>
-                    <td data-etiqueta="Personas">{c.asistencia === "si" ? c.asistentes : "—"}</td>
-                    <td className="panel-mensaje">{c.mensaje || "—"}</td>
-                    <td className="panel-fecha">{formatoFecha.format(new Date(c.fecha))}</td>
+                    <td data-etiqueta="Personas">
+                      {f.estado === "si" ? f.asistentes : "—"}
+                      {f.lugares ? ` de ${f.lugares}` : ""}
+                    </td>
+                    <td className="panel-mensaje">{f.mensaje || "—"}</td>
+                    <td className="panel-fecha">{f.fecha ? formatoFecha.format(new Date(f.fecha)) : "—"}</td>
                   </tr>
                 ))}
               </tbody>

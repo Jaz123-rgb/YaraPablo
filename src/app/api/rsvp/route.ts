@@ -1,34 +1,30 @@
 import { NextResponse } from "next/server";
-import { invitacion } from "@/content/invitacion";
-import { guardarConfirmacion, type Confirmacion } from "@/lib/confirmaciones";
+import { buscarInvitado } from "@/content/invitados";
+import { guardarConfirmacion } from "@/lib/confirmaciones";
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
 
-  const nombre = typeof body?.nombre === "string" ? body.nombre.trim().slice(0, 120) : "";
+  const invitado = buscarInvitado(typeof body?.slug === "string" ? body.slug : undefined);
   const asistencia = body?.asistencia;
   const asistentes = Number(body?.asistentes);
   const mensaje = typeof body?.mensaje === "string" ? body.mensaje.trim().slice(0, 1000) : "";
 
-  if (!nombre || (asistencia !== "si" && asistencia !== "no")) {
+  if (!invitado || (asistencia !== "si" && asistencia !== "no")) {
     return NextResponse.json({ error: "Datos incompletos" }, { status: 400 });
   }
-  if (asistencia === "si" && !(asistentes >= 1 && asistentes <= invitacion.maxAsistentes)) {
+  if (asistencia === "si" && !(Number.isInteger(asistentes) && asistentes >= 1 && asistentes <= invitado.lugares)) {
     return NextResponse.json({ error: "Número de asistentes inválido" }, { status: 400 });
   }
 
-  const confirmacion: Confirmacion = {
-    nombre,
-    asistencia,
-    asistentes: asistencia === "si" ? asistentes : 0,
-    mensaje,
-    fecha: new Date().toISOString(),
-  };
-
-  console.log("[rsvp]", confirmacion);
-
   try {
-    await guardarConfirmacion(confirmacion);
+    await guardarConfirmacion({
+      clave: invitado.slug,
+      nombre: invitado.nombre,
+      asistencia,
+      asistentes: asistencia === "si" ? asistentes : 0,
+      mensaje,
+    });
   } catch (error) {
     console.error("[rsvp] no se pudo guardar", error);
     return NextResponse.json({ error: "No se pudo guardar" }, { status: 500 });

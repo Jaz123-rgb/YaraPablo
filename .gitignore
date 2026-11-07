@@ -8,3 +8,6 @@ next-env.d.ts
 
 # confirmaciones de invitados
 /data/
+
+# enlaces personales para enviar a cada familia
+enlaces-invitados.csv
