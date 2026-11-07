@@ -1,22 +1,15 @@
 import Image from "next/image";
-import foto from "@/assets/portada-cueva.jpg";
+import foto from "@/assets/portada-caminando.jpg";
+import logo from "@/assets/logo-ja.png";
+import Menu from "@/components/Menu";
 import { invitacion } from "@/content/invitacion";
-
-const links = [
-  { href: "#celebracion", label: "Celebración" },
-  { href: "#itinerario", label: "Itinerario" },
-  { href: "#dresscode", label: "Dress code" },
-  { href: "#regalos", label: "Regalos" },
-  { href: "#hospedaje", label: "Hospedaje" },
-  { href: "#rsvp", label: "Confirmar" },
-];
 
 export default function Portada() {
   return (
     <header id="portada" className="portada">
       <Image
         src={foto}
-        alt="Pablo y Yara abrazados dentro de un cenote"
+        alt="Pablo y Yara caminan de la mano dentro de un cenote"
         fill
         priority
         placeholder="blur"
@@ -24,19 +17,11 @@ export default function Portada() {
         className="portada-img"
       />
       <div className="portada-overlay" aria-hidden="true" />
-      <nav className="portada-nav">
-        <a href="#portada" className="portada-logo script">{invitacion.iniciales}</a>
-        <div className="portada-links">
-          {links.map((l) => (
-            <a key={l.href} href={l.href}>{l.label}</a>
-          ))}
-        </div>
-      </nav>
+      <Menu />
       <div className="portada-hero">
-        <p className="portada-kicker">Con mucho amor</p>
-        <h1 className="portada-title script">{invitacion.novios}</h1>
-        <p className="portada-sub serif">Nos casamos</p>
-        <a href="#rsvp" className="btn btn-outline-light">Confirmar asistencia</a>
+        <h1 className="portada-title">
+          <Image src={logo} alt={invitacion.novios} sizes="(max-width: 640px) 170px, 300px" className="portada-logo-ja" />
+        </h1>
       </div>
       <div className="portada-footer">
         <span>{invitacion.fecha}</span>

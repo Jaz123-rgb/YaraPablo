@@ -1,5 +1,5 @@
 import Image from "next/image";
-import foto from "@/assets/cenote-descalzos.jpg";
+import foto from "@/assets/banda-beso.jpg";
 
 export default function FotoBanda() {
   return (

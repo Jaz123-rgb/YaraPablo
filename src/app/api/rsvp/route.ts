@@ -1,12 +1,6 @@
 import { NextResponse } from "next/server";
 import { invitacion } from "@/content/invitacion";
-
-export type Confirmacion = {
-  nombre: string;
-  asistencia: "si" | "no";
-  asistentes: number;
-  mensaje: string;
-};
+import { guardarConfirmacion, type Confirmacion } from "@/lib/confirmaciones";
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
@@ -28,11 +22,17 @@ export async function POST(request: Request) {
     asistencia,
     asistentes: asistencia === "si" ? asistentes : 0,
     mensaje,
+    fecha: new Date().toISOString(),
   };
 
-  // TODO: guardar la confirmación (base de datos, Google Sheets, correo, etc.).
-  // Por ahora solo se registra en la consola del servidor.
-  console.log("[rsvp]", new Date().toISOString(), confirmacion);
+  console.log("[rsvp]", confirmacion);
+
+  try {
+    await guardarConfirmacion(confirmacion);
+  } catch (error) {
+    console.error("[rsvp] no se pudo guardar", error);
+    return NextResponse.json({ error: "No se pudo guardar" }, { status: 500 });
+  }
 
   return NextResponse.json({ ok: true });
 }

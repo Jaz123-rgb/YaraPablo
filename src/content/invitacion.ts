@@ -6,12 +6,18 @@ export const invitacion = {
   iniciales: "P & Y",
   fecha: "13 de febrero, 2027 · 12:00 pm",
   fechaCorta: "13 · febrero · 2027",
+  // Hora de México (UTC-6). El contador llega a cero en este momento.
+  fechaISO: "2027-02-13T12:00:00-06:00",
+  fraseContador: [
+    "La vida no sería igual sin familia a la que llamamos amigos y amigos a los que llamamos familia.",
+    "Nuestro amor merece una gran celebración y queremos que seas parte de ella.",
+  ],
   lugarCorto: "Jardín Rincón Dorado, Xochitepec",
-  fechaLimiteRsvp: "[fecha límite]",
+  fechaLimiteRsvp: "13 de enero",
 
   padres: {
     novia: ["Andrea Orozco Álvarez", "Jorge Alberto Pérez Quintana"],
-    novio: ["Jesús Pablo Garay Torres ✝️", "Olga López Rodríguez"],
+    novio: ["Jesús Pablo Garay Torres †", "Olga López Rodríguez"],
   },
 
   itinerario: [
@@ -32,8 +38,8 @@ export const invitacion = {
 
   dressCode: {
     nombre: "Garden Formal Party",
-    inspiracionEllas: "https://mx.pinterest.com/pin/681943568623200044/",
-    inspiracionEllos: "https://mx.pinterest.com/pin/777856166934025371/",
+    inspiracionEllas: "https://mx.pinterest.com/juanpablogaraylopez/dresscode-boda-ja/?invite_code=9977a295ab7e441181dcadb36032822b&sender=640707621896192464",
+    inspiracionEllos: "https://mx.pinterest.com/juanpablogaraylopez/dresscode-boda-ja/?invite_code=9977a295ab7e441181dcadb36032822b&sender=640707621896192464",
   },
 
   regalo: {
@@ -69,6 +75,8 @@ export const invitacion = {
     telefono: "[teléfono / WhatsApp]",
     correo: "[correo@ejemplo.com]",
   },
+
+  cancion: { youtubeId: "-D_CivXVjzg", titulo: "Majo y Dan - Somos" },
 
   maxAsistentes: 4,
 };

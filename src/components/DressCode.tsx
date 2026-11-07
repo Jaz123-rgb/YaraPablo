@@ -1,6 +1,7 @@
 import Image from "next/image";
 import ejemploEllas from "@/assets/dresscode-ellas.jpg";
 import ejemploEllos from "@/assets/dresscode-ellos.jpg";
+import MarcoVictoriano from "@/components/MarcoVictoriano";
 import { invitacion } from "@/content/invitacion";
 
 export default function DressCode() {
@@ -12,7 +13,7 @@ export default function DressCode() {
           <p className="eyebrow">Código de vestimenta</p>
           <h2 className="script">{dressCode.nombre}</h2>
           <p className="body-text">
-            Formal, pensado para una celebración al aire libre: telas ligeras, colores suaves y mucha
+            Formal, pensado para una celebración al aire libre: telas ligeras, colores vivos y mucha
             elegancia.
           </p>
           <div className="dresscode-detalle">
@@ -34,13 +35,15 @@ export default function DressCode() {
             Inspiración ellas
           </a>
         </div>
-        <Image
-          src={ejemploEllas}
-          alt="Collage de vestidos formales largos y midi en amarillo, rosa, azul y verde"
-          placeholder="blur"
-          sizes="(max-width: 800px) 100vw, 340px"
-          className="dresscode-sub-img"
-        />
+        <MarcoVictoriano>
+          <Image
+            src={ejemploEllas}
+            alt="Collage de vestidos formales largos y midi en amarillo, rosa, azul y verde"
+            placeholder="blur"
+            sizes="(max-width: 800px) 100vw, 340px"
+            className="dresscode-sub-img"
+          />
+        </MarcoVictoriano>
       </div>
 
       <div className="dresscode-sub dresscode-sub-invertida">
@@ -53,13 +56,15 @@ export default function DressCode() {
             Inspiración ellos
           </a>
         </div>
-        <Image
-          src={ejemploEllos}
-          alt="Collage de trajes y camisas para hombre en beige, verde salvia y café"
-          placeholder="blur"
-          sizes="(max-width: 800px) 100vw, 340px"
-          className="dresscode-sub-img"
-        />
+        <MarcoVictoriano>
+          <Image
+            src={ejemploEllos}
+            alt="Collage de trajes y camisas para hombre en beige, verde salvia y café"
+            placeholder="blur"
+            sizes="(max-width: 800px) 100vw, 340px"
+            className="dresscode-sub-img"
+          />
+        </MarcoVictoriano>
       </div>
     </section>
   );

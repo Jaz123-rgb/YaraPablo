@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { invitacion } from "@/content/invitacion";
+import { crearAudio, lanzarConfeti, sonarBuuu } from "@/lib/reaccionRsvp";
 
 type Asistencia = "si" | "no" | null;
 
@@ -22,6 +23,7 @@ export default function Rsvp() {
     }
     setEnviando(true);
     setError(null);
+    const audio = asistencia === "no" ? crearAudio() : null;
     try {
       const res = await fetch("/api/rsvp", {
         method: "POST",
@@ -35,7 +37,10 @@ export default function Rsvp() {
       });
       if (!res.ok) throw new Error();
       setEnviado(true);
+      if (asistencia === "si") void lanzarConfeti();
+      else if (audio) sonarBuuu(audio);
     } catch {
+      void audio?.close();
       setError("No pudimos enviar tu confirmación. Intenta de nuevo en un momento.");
     } finally {
       setEnviando(false);

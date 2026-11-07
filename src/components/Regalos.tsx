@@ -1,5 +1,5 @@
 import Image from "next/image";
-import abrazo from "@/assets/regalos-abrazo.jpg";
+import jardin from "@/assets/regalos-jardin.jpg";
 import manos from "@/assets/regalos-manos.jpg";
 import CopiarClabe from "@/components/CopiarClabe";
 import { invitacion } from "@/content/invitacion";
@@ -11,8 +11,8 @@ export default function Regalos() {
       <div className="regalos-inner">
         <div className="regalos-fotos">
           <Image
-            src={abrazo}
-            alt="Yara abraza a Pablo por el cuello y se ve su anillo de compromiso"
+            src={jardin}
+            alt="Yara apoya la cabeza en el hombro de Pablo bajo los árboles de un jardín"
             placeholder="blur"
             sizes="(max-width: 800px) 80vw, 420px"
             className="regalos-foto-principal"
