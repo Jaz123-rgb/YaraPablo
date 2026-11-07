@@ -32,6 +32,15 @@ export async function leerConfirmaciones(): Promise<Confirmacion[]> {
   return filas.map((f) => ({ ...f, fecha: new Date(f.fecha).toISOString() }) as Confirmacion);
 }
 
+export async function buscarConfirmacion(clave: string) {
+  const filas = await db()`
+    SELECT clave, nombre, asistencia, asistentes, mensaje, fecha
+    FROM confirmaciones
+    WHERE clave = ${clave}
+  `;
+  return (filas[0] as Confirmacion | undefined) ?? null;
+}
+
 export async function borrarConfirmacion(clave: string) {
   await db()`DELETE FROM confirmaciones WHERE clave = ${clave}`;
 }

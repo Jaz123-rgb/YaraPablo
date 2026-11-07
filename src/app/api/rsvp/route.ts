@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { guardarConfirmacion } from "@/lib/confirmaciones";
+import { buscarConfirmacion, guardarConfirmacion } from "@/lib/confirmaciones";
 import { buscarInvitado } from "@/lib/invitados";
 
 export async function POST(request: Request) {
@@ -18,6 +18,9 @@ export async function POST(request: Request) {
   }
 
   try {
+    if (await buscarConfirmacion(invitado.slug)) {
+      return NextResponse.json({ error: "Esta invitación ya respondió" }, { status: 409 });
+    }
     await guardarConfirmacion({
       clave: invitado.slug,
       nombre: invitado.nombre,

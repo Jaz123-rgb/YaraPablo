@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { borrarConfirmacion, guardarConfirmacion, leerConfirmaciones } from "@/lib/confirmaciones";
+import { borrarConfirmacion, buscarConfirmacion, guardarConfirmacion } from "@/lib/confirmaciones";
 import { actualizarInvitado, buscarInvitado } from "@/lib/invitados";
 import { COOKIE_PANEL, passwordCorrecta, sesionValida, tokenSesion } from "@/lib/panelAuth";
 
@@ -50,7 +50,7 @@ export async function guardarInvitado(datos: FormData): Promise<{ error?: string
     return { error: `Las personas deben ser entre 1 y ${lugares}.` };
   }
 
-  const actual = (await leerConfirmaciones()).find((c) => c.clave === slug);
+  const actual = await buscarConfirmacion(slug);
   await actualizarInvitado(slug, nombre, lugares);
 
   if (estado === "pendiente") {

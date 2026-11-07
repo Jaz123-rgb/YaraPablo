@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { invitacion } from "@/content/invitacion";
+import type { Confirmacion } from "@/lib/confirmaciones";
 import type { Invitado } from "@/lib/invitados";
 import { crearAudio, lanzarConfeti, sonarBuuu } from "@/lib/reaccionRsvp";
 
 type Asistencia = "si" | "no" | null;
 
-export default function Rsvp({ invitado }: { invitado: Invitado | null }) {
+export default function Rsvp({ invitado, respuesta }: { invitado: Invitado | null; respuesta: Confirmacion | null }) {
   const [asistencia, setAsistencia] = useState<Asistencia>(null);
   const [asistentes, setAsistentes] = useState(String(invitado?.lugares ?? 1));
   const [mensaje, setMensaje] = useState("");
@@ -38,6 +39,11 @@ export default function Rsvp({ invitado }: { invitado: Invitado | null }) {
           mensaje: mensaje.trim(),
         }),
       });
+      if (res.status === 409) {
+        void audio?.close();
+        setError("Ya recibimos una respuesta de esta invitación. Recarga la página para verla.");
+        return;
+      }
       if (!res.ok) throw new Error();
       setEnviado(true);
       if (asistencia === "si") void lanzarConfeti();
@@ -64,6 +70,17 @@ export default function Rsvp({ invitado }: { invitado: Invitado | null }) {
 
       {!invitado ? (
         <p className="rsvp-sin-enlace">Para confirmar, usa el enlace personal que te enviamos.</p>
+      ) : respuesta ? (
+        <div role="status" className="rsvp-gracias">
+          <p className="serif">Ya recibimos tu respuesta</p>
+          <p>
+            {respuesta.asistencia === "si"
+              ? `Confirmaste tu asistencia para ${respuesta.asistentes} ${respuesta.asistentes === 1 ? "persona" : "personas"}. ¡Nos vemos en la fiesta!`
+              : "Nos avisaste que no podrás acompañarnos. Te llevaremos en el corazón ese día."}
+          </p>
+          {respuesta.mensaje && <p>Tu mensaje: {respuesta.mensaje}</p>}
+          <p className="rsvp-nota">Si necesitas cambiar tu respuesta, avísanos.</p>
+        </div>
       ) : enviado ? (
         <div role="status" className="rsvp-gracias">
           <p className="serif">¡Gracias!</p>

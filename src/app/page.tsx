@@ -10,10 +10,13 @@ import Hospedaje from "@/components/Hospedaje";
 import Rsvp from "@/components/Rsvp";
 import Cierre from "@/components/Cierre";
 import Musica from "@/components/Musica";
+import { buscarConfirmacion } from "@/lib/confirmaciones";
 import { buscarInvitado } from "@/lib/invitados";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ f?: string }> }) {
   const { f } = await searchParams;
+  const invitado = await buscarInvitado(f);
+  const respuesta = invitado ? await buscarConfirmacion(invitado.slug) : null;
 
   return (
     <div className="page">
@@ -26,7 +29,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ f
       <Indicaciones />
       <Regalos />
       <Hospedaje />
-      <Rsvp invitado={await buscarInvitado(f)} />
+      <Rsvp invitado={invitado} respuesta={respuesta} />
       <Cierre />
       <Musica />
     </div>
