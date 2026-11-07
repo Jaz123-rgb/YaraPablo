@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { buscarInvitado } from "@/content/invitados";
 import { guardarConfirmacion } from "@/lib/confirmaciones";
+import { buscarInvitado } from "@/lib/invitados";
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
 
-  const invitado = buscarInvitado(typeof body?.slug === "string" ? body.slug : undefined);
+  const invitado = await buscarInvitado(typeof body?.slug === "string" ? body.slug : undefined);
   const asistencia = body?.asistencia;
   const asistentes = Number(body?.asistentes);
   const mensaje = typeof body?.mensaje === "string" ? body.mensaje.trim().slice(0, 1000) : "";

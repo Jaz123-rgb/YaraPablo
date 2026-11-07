@@ -1,4 +1,4 @@
-import { neon } from "@neondatabase/serverless";
+import { db } from "@/lib/db";
 
 export type Confirmacion = {
   clave: string;
@@ -8,8 +8,6 @@ export type Confirmacion = {
   mensaje: string;
   fecha: string;
 };
-
-const db = () => neon(process.env.DATABASE_URL as string);
 
 /** Guarda la respuesta; si esa invitación ya había respondido, la reemplaza. */
 export async function guardarConfirmacion(c: Omit<Confirmacion, "fecha">) {
@@ -32,4 +30,8 @@ export async function leerConfirmaciones(): Promise<Confirmacion[]> {
     ORDER BY fecha DESC
   `;
   return filas.map((f) => ({ ...f, fecha: new Date(f.fecha).toISOString() }) as Confirmacion);
+}
+
+export async function borrarConfirmacion(clave: string) {
+  await db()`DELETE FROM confirmaciones WHERE clave = ${clave}`;
 }

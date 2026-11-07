@@ -10,13 +10,10 @@ import Hospedaje from "@/components/Hospedaje";
 import Rsvp from "@/components/Rsvp";
 import Cierre from "@/components/Cierre";
 import Musica from "@/components/Musica";
-import { buscarInvitado, invitados } from "@/content/invitados";
+import { buscarInvitado } from "@/lib/invitados";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ f?: string }> }) {
   const { f } = await searchParams;
-  const invitado = buscarInvitado(f);
-  // Con enlace personal no hace falta enviar la lista completa al navegador.
-  const opciones = invitado ? [] : [...invitados].sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
 
   return (
     <div className="page">
@@ -29,7 +26,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ f
       <Indicaciones />
       <Regalos />
       <Hospedaje />
-      <Rsvp invitado={invitado} opciones={opciones} />
+      <Rsvp invitado={await buscarInvitado(f)} />
       <Cierre />
       <Musica />
     </div>

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import Link from "next/link";
+import FilaInvitado, { type FilaPanel } from "@/components/FilaInvitado";
 import { invitacion } from "@/content/invitacion";
-import { invitados } from "@/content/invitados";
 import { leerConfirmaciones } from "@/lib/confirmaciones";
+import { leerInvitados } from "@/lib/invitados";
 import { COOKIE_PANEL, sesionValida } from "@/lib/panelAuth";
 import { entrar, salir } from "./actions";
 
@@ -20,8 +21,6 @@ const filtros = [
   { id: "no", etiqueta: "No asisten" },
   { id: "pendiente", etiqueta: "Pendientes" },
 ];
-
-const etiquetasEstado: Record<string, string> = { si: "Asiste", no: "No asiste", pendiente: "Pendiente" };
 
 const formatoFecha = new Intl.DateTimeFormat("es-MX", {
   day: "numeric",
@@ -54,25 +53,31 @@ export default async function PanelNovios({
     );
   }
 
-  const confirmaciones = await leerConfirmaciones();
-  const respondieron = new Set(confirmaciones.map((c) => c.clave));
-  const asisten = confirmaciones.filter((c) => c.asistencia === "si");
-  const noAsisten = confirmaciones.length - asisten.length;
-  const personas = asisten.reduce((total, c) => total + c.asistentes, 0);
-  const lugares = invitados.reduce((total, i) => total + i.lugares, 0);
+  const [invitados, confirmaciones] = await Promise.all([leerInvitados(), leerConfirmaciones()]);
+  const orden = new Map(confirmaciones.map((c, i) => [c.clave, i]));
 
-  const filas = [
-    ...confirmaciones.map((c) => ({
-      ...c,
-      estado: c.asistencia as string,
-      lugares: invitados.find((i) => i.slug === c.clave)?.lugares,
-    })),
-    ...invitados
-      .filter((i) => !respondieron.has(i.slug))
-      .map((i) => ({ clave: i.slug, nombre: i.nombre, estado: "pendiente", asistentes: 0, lugares: i.lugares, mensaje: "", fecha: "" })),
-  ];
+  const filas: FilaPanel[] = invitados
+    .map((i) => {
+      const c = confirmaciones.find((r) => r.clave === i.slug);
+      return {
+        slug: i.slug,
+        nombre: i.nombre,
+        lugares: i.lugares,
+        estado: c?.asistencia ?? "pendiente",
+        asistentes: c?.asistentes ?? 0,
+        mensaje: c?.mensaje ?? "",
+        fecha: c ? formatoFecha.format(new Date(c.fecha)) : "",
+      };
+    })
+    // Primero las respuestas más recientes, después las pendientes en orden de la lista.
+    .sort((a, b) => (orden.get(a.slug) ?? Infinity) - (orden.get(b.slug) ?? Infinity));
+
   const visibles = filas.filter((f) => filtro === "todos" || f.estado === filtro);
+  const asisten = filas.filter((f) => f.estado === "si");
+  const noAsisten = filas.filter((f) => f.estado === "no").length;
   const pendientes = filas.filter((f) => f.estado === "pendiente").length;
+  const personas = asisten.reduce((total, f) => total + f.asistentes, 0);
+  const lugares = invitados.reduce((total, i) => total + i.lugares, 0);
 
   const resumen = [
     { valor: `${personas}/${lugares}`, etiqueta: "Personas confirmadas" },
@@ -128,23 +133,11 @@ export default async function PanelNovios({
                   <th scope="col">Personas</th>
                   <th scope="col">Mensaje</th>
                   <th scope="col">Fecha</th>
+                  <th scope="col">Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                {visibles.map((f) => (
-                  <tr key={f.clave}>
-                    <td className="serif panel-nombre">{f.nombre}</td>
-                    <td>
-                      <span className={`panel-estado panel-estado-${f.estado}`}>{etiquetasEstado[f.estado]}</span>
-                    </td>
-                    <td data-etiqueta="Personas">
-                      {f.estado === "si" ? f.asistentes : "—"}
-                      {f.lugares ? ` de ${f.lugares}` : ""}
-                    </td>
-                    <td className="panel-mensaje">{f.mensaje || "—"}</td>
-                    <td className="panel-fecha">{f.fecha ? formatoFecha.format(new Date(f.fecha)) : "—"}</td>
-                  </tr>
-                ))}
+                {visibles.map((f) => <FilaInvitado key={f.slug} fila={f} />)}
               </tbody>
             </table>
           </div>
