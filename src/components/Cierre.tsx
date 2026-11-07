@@ -8,8 +8,11 @@ export default function Cierre() {
       <p className="cierre-nombres script">{invitacion.novios}</p>
       <p className="eyebrow">{invitacion.fechaCorta}</p>
       <div className="cierre-contacto">
-        <span>Dudas: {invitacion.contacto.telefono}</span>
-        <span>{invitacion.contacto.correo}</span>
+        <span>Dudas:</span>
+        {invitacion.contacto.telefonos.map((telefono) => (
+          <a key={telefono} href={`tel:${telefono.replaceAll(" ", "")}`}>{telefono}</a>
+        ))}
+        <a href={`mailto:${invitacion.contacto.correo}`}>{invitacion.contacto.correo}</a>
       </div>
       <Image src={monograma} alt="Monograma JA" sizes="72px" className="cierre-monograma" />
     </footer>

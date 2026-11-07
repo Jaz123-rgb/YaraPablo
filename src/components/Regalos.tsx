@@ -1,11 +1,12 @@
 import Image from "next/image";
+import logo from "@/assets/logo-ja.png";
 import jardin from "@/assets/regalos-jardin.jpg";
 import manos from "@/assets/regalos-manos.jpg";
 import CopiarClabe from "@/components/CopiarClabe";
 import { invitacion } from "@/content/invitacion";
 
 export default function Regalos() {
-  const { regalo, iniciales } = invitacion;
+  const { regalo } = invitacion;
   return (
     <section id="regalos" className="regalos dark">
       <div className="regalos-inner">
@@ -35,7 +36,9 @@ export default function Regalos() {
             <svg className="sobre-solapa" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true">
               <path d="M0 0 L50 30 L100 0" vectorEffect="non-scaling-stroke" />
             </svg>
-            <span className="sobre-sello script" aria-hidden="true">{iniciales}</span>
+            <span className="sobre-sello" aria-hidden="true">
+              <Image src={logo} alt="" unoptimized />
+            </span>
             <div className="sobre-contenido">
               <h3 className="script">{regalo.titulo}</h3>
               <p className="sobre-nota">{regalo.nota}</p>

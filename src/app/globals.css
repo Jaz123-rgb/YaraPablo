@@ -403,9 +403,8 @@ input:focus, textarea:focus, select:focus {
   border-radius: 50%;
   background: var(--night);
   box-shadow: 0 0 0 3px var(--night), inset 0 0 0 1px var(--cream-muted);
-  color: var(--cream);
-  font-size: 19px;
 }
+.sobre-sello img { width: 52px; height: auto; filter: drop-shadow(0 0 0.4px var(--cream)); }
 .sobre-contenido { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 138px 24px 32px; }
 .sobre-contenido h3 { margin: 0; font-size: clamp(36px, 4vw, 44px); line-height: 1.15; }
 .sobre-nota { margin: 0; font-size: 13px; line-height: 1.7; color: var(--ink-soft); }
@@ -434,6 +433,8 @@ input:focus, textarea:focus, select:focus {
 .hospedaje .card { background: var(--sand); padding: 32px 28px; }
 .hospedaje .card .eyebrow { font-size: 11px; letter-spacing: 0.2em; }
 .hospedaje .text-link { margin-top: 6px; }
+.hospedaje-pdf { margin-top: 12px; border: 1px solid var(--ink); color: var(--ink); }
+.hospedaje-pdf:hover { background: var(--ink); color: var(--cream); }
 
 /* ---------- RSVP ---------- */
 
@@ -519,6 +520,8 @@ textarea.rsvp-input { padding: 14px 16px; resize: vertical; }
   font-size: 13px;
   color: var(--cream-soft);
 }
+.cierre-contacto a { color: inherit; }
+.cierre-contacto a:hover { color: var(--cream); }
 .cierre-monograma { width: 72px; height: 72px; object-fit: contain; margin-top: 48px; opacity: 0.85; }
 
 .rsvp-invitado { margin: 0; font-size: 24px; font-weight: 600; }

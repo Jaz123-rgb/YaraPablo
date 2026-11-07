@@ -13,11 +13,14 @@ export default function Hospedaje() {
           <div key={i} className="card">
             <p className="eyebrow">{opcion.tipo}</p>
             <h3>{opcion.nombre}</h3>
-            <p>{opcion.detalle}</p>
+            {opcion.detalle && <p>{opcion.detalle}</p>}
             <a href={opcion.link.url} className="text-link">{opcion.link.texto}</a>
           </div>
         ))}
       </div>
+      <a href="/hoteles-cercanos.pdf" target="_blank" rel="noopener noreferrer" className="btn hospedaje-pdf">
+        Ver todas las opciones (PDF)
+      </a>
     </section>
   );
 }

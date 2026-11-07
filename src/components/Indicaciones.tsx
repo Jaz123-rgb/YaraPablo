@@ -2,8 +2,8 @@ import { invitacion } from "@/content/invitacion";
 
 export default function Indicaciones() {
   const items = [
-    { titulo: "Niños bienvenidos", texto: "Los más pequeños también son parte de la celebración." },
-    { titulo: "Pase personal", texto: "Tu invitación es válida para el número de lugares indicado, incluyendo a los niños." },
+    { titulo: "Valet parking", texto: "Sin costo, para que llegues sin preocupaciones." },
+    { titulo: "Pase personal", texto: "Tu invitación es válida para el número de lugares indicado." },
     {
       titulo: "Confirma a tiempo",
       texto: `Antes del ${invitacion.fechaLimiteRsvp}, para organizar todo con cariño.`,

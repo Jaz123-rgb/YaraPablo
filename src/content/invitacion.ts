@@ -3,7 +3,6 @@
 
 export const invitacion = {
   novios: "Pablo & Yara",
-  iniciales: "P & Y",
   fecha: "13 de febrero, 2027 · 12:00 pm",
   fechaCorta: "13 · febrero · 2027",
   // Hora de México (UTC-6). El contador llega a cero en este momento.
@@ -34,7 +33,7 @@ export const invitacion = {
       mapa: "https://www.google.com/maps/place/Jardin+Rincon+Dorado/@18.7885653,-99.2028331,17z/data=!3m1!4b1!4m6!3m5!1s0x85cdd81249a7b9ed:0x25db08916b53c7e4!8m2!3d18.7885653!4d-99.2028331!16s%2Fg%2F1pyqmrbfh",
     },
   ],
-  estacionamiento: "[detalle de estacionamiento o valet]",
+  estacionamiento: "valet parking sin costo",
 
   dressCode: {
     nombre: "Garden Formal Party",
@@ -52,28 +51,44 @@ export const invitacion = {
 
   hospedaje: [
     {
-      tipo: "Hotel",
-      nombre: "[Nombre del hotel]",
-      detalle: "A [00] min del lugar. Tarifa preferencial con el código [CÓDIGO].",
-      link: { texto: "Reservar →", url: "#hospedaje" },
+      tipo: "Frente al jardín",
+      nombre: "Villa Xochi",
+      detalle: "Informes: Adriana Wilhelm",
+      link: { texto: "55 5407 8083 →", url: "tel:+525554078083" },
     },
     {
-      tipo: "Hotel",
-      nombre: "[Nombre del hotel]",
-      detalle: "A [00] min del lugar. Tarifa preferencial con el código [CÓDIGO].",
-      link: { texto: "Reservar →", url: "#hospedaje" },
+      tipo: "A 3 minutos",
+      nombre: "Quinta la Creación",
+      detalle: "Informes: Karina Pino",
+      link: { texto: "777 120 4679 →", url: "tel:+527771204679" },
     },
     {
-      tipo: "Airbnb",
-      nombre: "Casas y departamentos",
-      detalle: "Recomendamos buscar en la zona de [colonia / zona], a pocos minutos del evento.",
-      link: { texto: "Ver opciones →", url: "https://www.airbnb.mx" },
+      tipo: "A 3 minutos",
+      nombre: "Quinta Taboo",
+      detalle: "Informes: Viviana Moreno",
+      link: { texto: "55 3933 5568 →", url: "tel:+525539335568" },
+    },
+    {
+      tipo: "A 3 minutos",
+      nombre: "Bungalows Iris",
+      detalle: "Informes y reservaciones",
+      link: { texto: "55 8599 4843 →", url: "tel:+525585994843" },
+    },
+    {
+      tipo: "A 5 minutos",
+      nombre: "Fiesta Americana San Antonio El Puente",
+      link: { texto: "777 362 0770 →", url: "tel:+527773620770" },
+    },
+    {
+      tipo: "A 5 minutos",
+      nombre: "Radisson Hotel Quinta Rubelinas",
+      link: { texto: "777 487 8700 →", url: "tel:+527774878700" },
     },
   ],
 
   contacto: {
-    telefono: "[teléfono / WhatsApp]",
-    correo: "[correo@ejemplo.com]",
+    telefonos: ["+52 722 377 1440", "+52 722 109 9373"],
+    correo: "juanpablogaraylopez@gmail.com",
   },
 
   cancion: { youtubeId: "-D_CivXVjzg", titulo: "Majo y Dan - Somos" },
