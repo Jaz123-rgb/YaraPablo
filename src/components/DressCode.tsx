@@ -19,7 +19,7 @@ export default function DressCode() {
           <div className="dresscode-detalle">
             <p className="dresscode-tip">
               Tip: tacón ancho o plataforma para caminar cómodos en el jardín. El blanco y el marfil
-              se reservan para la novia.
+              se reservan para la novia; te pedimos evitar también el champagne y el negro.
             </p>
           </div>
         </div>

@@ -567,7 +567,18 @@ textarea.rsvp-input { padding: 14px 16px; resize: vertical; }
 }
 .bienvenida-saliendo { opacity: 0; pointer-events: none; }
 .bienvenida-logo { width: clamp(150px, 30vw, 220px); height: auto; }
-.bienvenida-invitado { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.bienvenida-invitado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  animation: bienvenida-aparece 0.8s ease both;
+}
+@keyframes bienvenida-aparece {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
 .bienvenida-invitado .eyebrow { color: var(--cream-muted); }
 .bienvenida-nombre { margin: 0; max-width: 560px; font-size: clamp(28px, 5vw, 40px); line-height: 1.2; }
 .bienvenida-boton { padding: 0 32px; background: none; font-family: inherit; cursor: pointer; }
@@ -598,6 +609,7 @@ textarea.rsvp-input { padding: 14px 16px; resize: vertical; }
 }
 @media (prefers-reduced-motion: reduce) {
   .bienvenida { transition: none; }
+  .bienvenida-invitado { animation: none; }
   .bienvenida-puntos span { animation-duration: 2.4s; transform: none; }
 }
 .musica-boton {

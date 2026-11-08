@@ -10,6 +10,8 @@ const { youtubeId, titulo } = invitacion.cancion;
 // se abre de todos modos y el botón de música queda disponible.
 const ESPERA_REPRODUCCION = 6000;
 const DURACION_SALIDA = 700;
+// Tiempo mínimo que dura la pantalla de carga, aunque la música arranque antes.
+const TIEMPO_MINIMO_NOMBRE = 4000;
 const REPRODUCIENDO = 1;
 const URL_REPRODUCTOR = `https://www.youtube-nocookie.com/embed/${youtubeId}?enablejsapi=1&loop=1&playlist=${youtubeId}&playsinline=1&rel=0`;
 
@@ -22,6 +24,7 @@ export default function Musica({ invitado }: { invitado?: string }) {
   // el invitado abra la invitación, sin esperar a que YouTube termine de cargar.
   const listo = useRef(false);
   const quiereSonar = useRef(false);
+  const abiertaEn = useRef(0);
   const [sonando, setSonando] = useState(false);
   const [bienvenida, setBienvenida] = useState<Bienvenida>("esperando");
 
@@ -36,10 +39,7 @@ export default function Musica({ invitado }: { invitado?: string }) {
           if (quiereSonar.current) enviar("playVideo");
         }
         if (typeof info?.currentTime === "number") segundoActual.current = info.currentTime;
-        if (info?.playerState === REPRODUCIENDO) {
-          setSonando(true);
-          setBienvenida((b) => (b === "cargando" ? "saliendo" : b));
-        }
+        if (info?.playerState === REPRODUCIENDO) setSonando(true);
       } catch {
         // Mensaje que no es del reproductor.
       }
@@ -60,6 +60,11 @@ export default function Musica({ invitado }: { invitado?: string }) {
   }, [bienvenida]);
 
   useEffect(() => {
+    if (bienvenida === "cargando" && sonando) {
+      const restante = Math.max(0, TIEMPO_MINIMO_NOMBRE - (Date.now() - abiertaEn.current));
+      const salida = setTimeout(() => setBienvenida("saliendo"), restante);
+      return () => clearTimeout(salida);
+    }
     if (bienvenida === "cargando") {
       const espera = setTimeout(() => {
         quiereSonar.current = false;
@@ -72,7 +77,7 @@ export default function Musica({ invitado }: { invitado?: string }) {
       const salida = setTimeout(() => setBienvenida("cerrada"), DURACION_SALIDA);
       return () => clearTimeout(salida);
     }
-  }, [bienvenida]);
+  }, [bienvenida, sonando]);
 
   function hablarConReproductor(mensaje: object) {
     reproductor.current?.contentWindow?.postMessage(JSON.stringify(mensaje), "*");
@@ -95,6 +100,7 @@ export default function Musica({ invitado }: { invitado?: string }) {
   }
 
   function abrirInvitacion() {
+    abiertaEn.current = Date.now();
     setBienvenida("cargando");
     reproducir();
   }
@@ -120,7 +126,8 @@ export default function Musica({ invitado }: { invitado?: string }) {
           aria-label="Bienvenida"
         >
           <Image src={logo} alt={invitacion.novios} priority sizes="200px" className="bienvenida-logo" />
-          {invitado && (
+          {/* El nombre aparece hasta que el invitado abre la invitación. */}
+          {invitado && bienvenida !== "esperando" && (
             <div className="bienvenida-invitado">
               <p className="eyebrow">Invitación especial para</p>
               <p className="bienvenida-nombre serif">{invitado}</p>
