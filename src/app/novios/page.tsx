@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import FilaInvitado, { type FilaPanel } from "@/components/FilaInvitado";
+import NuevoInvitado from "@/components/NuevoInvitado";
 import { invitacion } from "@/content/invitacion";
 import { leerConfirmaciones } from "@/lib/confirmaciones";
 import { leerInvitados } from "@/lib/invitados";
@@ -120,6 +121,8 @@ export default async function PanelNovios({
             </Link>
           ))}
         </nav>
+
+        <NuevoInvitado />
 
         {visibles.length === 0 ? (
           <p className="panel-vacio">Todavía no hay respuestas aquí.</p>

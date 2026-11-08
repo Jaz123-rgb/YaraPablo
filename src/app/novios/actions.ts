@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { borrarConfirmacion, buscarConfirmacion, guardarConfirmacion } from "@/lib/confirmaciones";
-import { actualizarInvitado, buscarInvitado } from "@/lib/invitados";
+import { actualizarInvitado, buscarInvitado, crearInvitado } from "@/lib/invitados";
 import { COOKIE_PANEL, passwordCorrecta, sesionValida, tokenSesion } from "@/lib/panelAuth";
 
 export async function entrar(formData: FormData) {
@@ -61,4 +61,20 @@ export async function guardarInvitado(datos: FormData): Promise<{ error?: string
 
   revalidatePath("/novios");
   return {};
+}
+
+export async function agregarInvitado(datos: FormData): Promise<{ error?: string; slug?: string }> {
+  if (!sesionValida((await cookies()).get(COOKIE_PANEL)?.value)) {
+    return { error: "Tu sesión terminó. Vuelve a entrar al panel." };
+  }
+
+  const nombre = String(datos.get("nombre") ?? "").trim().slice(0, 120);
+  const lugares = entero(datos.get("lugares"));
+
+  if (!nombre) return { error: "Escribe un nombre." };
+  if (!Number.isInteger(lugares) || lugares < 1 || lugares > 99) return { error: "Los lugares deben ser entre 1 y 99." };
+
+  const slug = await crearInvitado(nombre, lugares);
+  revalidatePath("/novios");
+  return { slug };
 }
