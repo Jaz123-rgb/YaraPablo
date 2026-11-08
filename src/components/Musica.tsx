@@ -15,8 +15,34 @@ export default function Musica() {
   // el invitado toque el botón, sin esperar a que YouTube termine de cargar.
   const listo = useRef(false);
   const quiereSonar = useRef(false);
+  // Si el invitado pausa la música con el botón, ya no se vuelve a iniciar sola.
+  const yaInteractuo = useRef(false);
+  const inicioAutomatico = useRef(false);
   const [sonando, setSonando] = useState(false);
   const [necesitaToque, setNecesitaToque] = useState(false);
+
+  // Los navegadores no dejan reproducir sonido al abrir la página, así que la música arranca con el
+  // primer toque, clic o tecla en cualquier parte de la invitación.
+  useEffect(() => {
+    const eventos = ["click", "touchend", "keydown"] as const;
+
+    function alPrimerToque(e: Event) {
+      quitar();
+      if (yaInteractuo.current) return;
+      if (e.target instanceof Element && e.target.closest(".musica")) return;
+      yaInteractuo.current = true;
+      inicioAutomatico.current = true;
+      reproducir();
+      setSonando(true);
+    }
+
+    function quitar() {
+      eventos.forEach((ev) => window.removeEventListener(ev, alPrimerToque, true));
+    }
+
+    eventos.forEach((ev) => window.addEventListener(ev, alPrimerToque, true));
+    return quitar;
+  }, []);
 
   useEffect(() => {
     function alRecibirMensaje(e: MessageEvent) {
@@ -46,7 +72,16 @@ export default function Musica() {
       return;
     }
 
-    const espera = setTimeout(() => setNecesitaToque(true), ESPERA_REPRODUCCION);
+    const espera = setTimeout(() => {
+      // Si el inicio automático no funcionó, no se muestra el reproductor: el botón sigue disponible.
+      if (inicioAutomatico.current) {
+        quiereSonar.current = false;
+        if (listo.current) enviar("pauseVideo");
+        setSonando(false);
+      } else {
+        setNecesitaToque(true);
+      }
+    }, ESPERA_REPRODUCCION);
 
     function alRecibirMensaje(e: MessageEvent) {
       if (e.source !== reproductor.current?.contentWindow || typeof e.data !== "string") return;
@@ -80,16 +115,22 @@ export default function Musica() {
     hablarConReproductor({ event: "command", func, args });
   }
 
+  function reproducir() {
+    quiereSonar.current = true;
+    if (!listo.current) return;
+    // Vuelve al segundo guardado por si el navegador reinició la canción durante la pausa.
+    if (segundoActual.current > 0) enviar("seekTo", [segundoActual.current, true]);
+    enviar("playVideo");
+  }
+
   function alternar() {
-    quiereSonar.current = !sonando;
-    if (listo.current) {
-      if (sonando) {
-        enviar("pauseVideo");
-      } else {
-        // Vuelve al segundo guardado por si el navegador reinició la canción durante la pausa.
-        if (segundoActual.current > 0) enviar("seekTo", [segundoActual.current, true]);
-        enviar("playVideo");
-      }
+    yaInteractuo.current = true;
+    inicioAutomatico.current = false;
+    if (sonando) {
+      quiereSonar.current = false;
+      if (listo.current) enviar("pauseVideo");
+    } else {
+      reproducir();
     }
     setSonando(!sonando);
   }
