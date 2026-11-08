@@ -15,7 +15,7 @@ const URL_REPRODUCTOR = `https://www.youtube-nocookie.com/embed/${youtubeId}?ena
 
 type Bienvenida = "esperando" | "cargando" | "saliendo" | "cerrada";
 
-export default function Musica() {
+export default function Musica({ invitado }: { invitado?: string }) {
   const reproductor = useRef<HTMLIFrameElement>(null);
   const segundoActual = useRef(0);
   // El reproductor se carga desde que se abre la página para que la música arranque en cuanto
@@ -120,6 +120,12 @@ export default function Musica() {
           aria-label="Bienvenida"
         >
           <Image src={logo} alt={invitacion.novios} priority sizes="200px" className="bienvenida-logo" />
+          {invitado && (
+            <div className="bienvenida-invitado">
+              <p className="eyebrow">Invitación especial para</p>
+              <p className="bienvenida-nombre serif">{invitado}</p>
+            </div>
+          )}
           {bienvenida === "esperando" ? (
             <button type="button" className="btn btn-outline-light bienvenida-boton" onClick={abrirInvitacion}>
               Abrir invitación

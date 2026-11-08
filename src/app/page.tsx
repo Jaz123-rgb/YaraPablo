@@ -31,7 +31,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ f
       <Hospedaje />
       <Rsvp invitado={invitado} respuesta={respuesta} />
       <Cierre />
-      <Musica />
+      <Musica invitado={invitado?.nombre} />
     </div>
   );
 }
