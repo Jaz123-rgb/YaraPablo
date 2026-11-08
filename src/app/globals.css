@@ -548,8 +548,55 @@ textarea.rsvp-input { padding: 14px 16px; resize: vertical; }
   align-items: flex-end;
   gap: 10px;
 }
+/* El video nunca se ve: solo se usa para la música. */
 .musica-video { position: absolute; bottom: 0; right: 0; width: 200px; height: 113px; border: 0; opacity: 0; pointer-events: none; }
-.musica-video-visible { position: static; border: 1px solid var(--cream-muted); opacity: 1; pointer-events: auto; }
+
+.bienvenida {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: 24px;
+  background: var(--night);
+  color: var(--cream);
+  transition: opacity 0.7s ease;
+}
+.bienvenida-saliendo { opacity: 0; pointer-events: none; }
+.bienvenida-logo { width: clamp(150px, 30vw, 220px); height: auto; }
+.bienvenida-boton { padding: 0 32px; background: none; font-family: inherit; cursor: pointer; }
+.bienvenida-cargando {
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cream-muted);
+}
+.bienvenida-puntos { display: flex; gap: 10px; }
+.bienvenida-puntos span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cream);
+  animation: bienvenida-punto 1.2s ease-in-out infinite;
+}
+.bienvenida-puntos span:nth-child(2) { animation-delay: 0.2s; }
+.bienvenida-puntos span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bienvenida-punto {
+  0%, 80%, 100% { opacity: 0.25; transform: scale(0.8); }
+  40% { opacity: 1; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bienvenida { transition: none; }
+  .bienvenida-puntos span { animation-duration: 2.4s; transform: none; }
+}
 .musica-boton {
   position: relative;
   width: 52px;
