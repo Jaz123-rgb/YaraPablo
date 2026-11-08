@@ -6,16 +6,39 @@ import { invitacion } from "@/content/invitacion";
 const { youtubeId, titulo } = invitacion.cancion;
 const ESPERA_REPRODUCCION = 5000;
 const REPRODUCIENDO = 1;
-const URL_REPRODUCTOR = `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&enablejsapi=1&loop=1&playlist=${youtubeId}&playsinline=1&rel=0`;
+const URL_REPRODUCTOR = `https://www.youtube-nocookie.com/embed/${youtubeId}?enablejsapi=1&loop=1&playlist=${youtubeId}&playsinline=1&rel=0`;
 
 export default function Musica() {
   const reproductor = useRef<HTMLIFrameElement>(null);
   const segundoActual = useRef(0);
-  const [iniciada, setIniciada] = useState(false);
+  // El reproductor se carga desde que se abre la página para que la música arranque en cuanto
+  // el invitado toque el botón, sin esperar a que YouTube termine de cargar.
+  const listo = useRef(false);
+  const quiereSonar = useRef(false);
   const [sonando, setSonando] = useState(false);
   const [necesitaToque, setNecesitaToque] = useState(false);
 
-  // Algunos navegadores, como Safari en iPhone, bloquean el inicio automático. Si la música no
+  useEffect(() => {
+    function alRecibirMensaje(e: MessageEvent) {
+      if (e.source !== reproductor.current?.contentWindow || typeof e.data !== "string") return;
+      try {
+        const { event, info } = JSON.parse(e.data);
+        if (event === "onReady") {
+          listo.current = true;
+          // Si el invitado tocó el botón antes de que YouTube estuviera listo, arranca ahora.
+          if (quiereSonar.current) enviar("playVideo");
+        }
+        if (typeof info?.currentTime === "number") segundoActual.current = info.currentTime;
+      } catch {
+        // Mensaje que no es del reproductor.
+      }
+    }
+
+    window.addEventListener("message", alRecibirMensaje);
+    return () => window.removeEventListener("message", alRecibirMensaje);
+  }, []);
+
+  // Algunos navegadores, como Safari en iPhone, bloquean el inicio desde el botón. Si la música no
   // arranca, se muestra el reproductor para que el invitado pueda tocarlo directamente.
   useEffect(() => {
     if (!sonando) {
@@ -29,7 +52,6 @@ export default function Musica() {
       if (e.source !== reproductor.current?.contentWindow || typeof e.data !== "string") return;
       try {
         const { info } = JSON.parse(e.data);
-        if (typeof info?.currentTime === "number") segundoActual.current = info.currentTime;
         if (info?.playerState === REPRODUCIENDO) {
           clearTimeout(espera);
           setNecesitaToque(false);
@@ -59,31 +81,29 @@ export default function Musica() {
   }
 
   function alternar() {
-    if (iniciada) {
+    quiereSonar.current = !sonando;
+    if (listo.current) {
       if (sonando) {
         enviar("pauseVideo");
       } else {
         // Vuelve al segundo guardado por si el navegador reinició la canción durante la pausa.
-        enviar("seekTo", [segundoActual.current, true]);
+        if (segundoActual.current > 0) enviar("seekTo", [segundoActual.current, true]);
         enviar("playVideo");
       }
     }
-    setIniciada(true);
     setSonando(!sonando);
   }
 
   return (
     <div className="musica">
-      {iniciada && (
-        <iframe
-          ref={reproductor}
-          className={necesitaToque ? "musica-video musica-video-visible" : "musica-video"}
-          onLoad={escucharReproductor}
-          src={URL_REPRODUCTOR}
-          title={`Reproductor de YouTube: ${titulo}`}
-          allow="autoplay; encrypted-media"
-        />
-      )}
+      <iframe
+        ref={reproductor}
+        className={necesitaToque ? "musica-video musica-video-visible" : "musica-video"}
+        onLoad={escucharReproductor}
+        src={URL_REPRODUCTOR}
+        title={`Reproductor de YouTube: ${titulo}`}
+        allow="autoplay; encrypted-media"
+      />
       <button
         type="button"
         className="musica-boton"
