@@ -7,7 +7,13 @@ export default function Celebracion() {
   return (
     <section id="celebracion" className="section celebracion">
       <div className="celebracion-top">
-        <p className="serif">Nuestro<br />amor</p>
+        <blockquote className="celebracion-versiculo serif">
+          <p>
+            Así que no son ya más dos, sino una sola carne; por tanto, lo que Dios ha unido, no lo
+            separe el hombre.
+          </p>
+          <cite>Mateo 19:6</cite>
+        </blockquote>
         <Image
           src={foto}
           alt="Pablo y Yara tomados de la mano, ella muestra su anillo de compromiso"

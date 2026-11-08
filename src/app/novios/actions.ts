@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { borrarConfirmacion, buscarConfirmacion, guardarConfirmacion } from "@/lib/confirmaciones";
-import { actualizarInvitado, buscarInvitado, crearInvitado } from "@/lib/invitados";
+import { actualizarInvitado, borrarInvitado as borrarDeLaLista, buscarInvitado, crearInvitado } from "@/lib/invitados";
 import { COOKIE_PANEL, passwordCorrecta, sesionValida, tokenSesion } from "@/lib/panelAuth";
 
 export async function entrar(formData: FormData) {
@@ -59,6 +59,17 @@ export async function guardarInvitado(datos: FormData): Promise<{ error?: string
     await guardarConfirmacion({ clave: slug, nombre, asistencia: estado, asistentes, mensaje: actual?.mensaje ?? "" });
   }
 
+  revalidatePath("/novios");
+  return {};
+}
+
+export async function borrarInvitado(slug: string): Promise<{ error?: string }> {
+  if (!sesionValida((await cookies()).get(COOKIE_PANEL)?.value)) {
+    return { error: "Tu sesión terminó. Vuelve a entrar al panel." };
+  }
+  if (!(await buscarInvitado(slug))) return { error: "No encontramos esta invitación." };
+
+  await borrarDeLaLista(slug);
   revalidatePath("/novios");
   return {};
 }

@@ -17,6 +17,12 @@ export async function actualizarInvitado(slug: string, nombre: string, lugares: 
   await db()`UPDATE confirmaciones SET nombre = ${nombre} WHERE clave = ${slug}`;
 }
 
+/** Borra la invitación y su respuesta; su enlace personal deja de funcionar. */
+export async function borrarInvitado(slug: string) {
+  await db()`DELETE FROM confirmaciones WHERE clave = ${slug}`;
+  await db()`DELETE FROM invitados WHERE slug = ${slug}`;
+}
+
 /** Convierte "Familia Alcántara" en "familia-alcantara", el mismo formato de los enlaces existentes. */
 function slugDe(nombre: string) {
   return nombre

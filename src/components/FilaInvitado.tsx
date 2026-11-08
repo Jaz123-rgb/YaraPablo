@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useFormStatus } from "react-dom";
-import { guardarInvitado } from "@/app/novios/actions";
+import { borrarInvitado, guardarInvitado } from "@/app/novios/actions";
 import CopiarEnlace from "@/components/CopiarEnlace";
 
 export type FilaPanel = {
@@ -30,6 +30,17 @@ export default function FilaInvitado({ fila }: { fila: FilaPanel }) {
   const [editando, setEditando] = useState(false);
   const [estado, setEstado] = useState(fila.estado);
   const [error, setError] = useState<string | null>(null);
+  const [borrando, iniciarBorrado] = useTransition();
+
+  function borrar() {
+    const aviso = `¿Borrar a "${fila.nombre}"? Se borrará también su respuesta y su enlace dejará de funcionar. Esto no se puede deshacer.`;
+    if (!window.confirm(aviso)) return;
+    setError(null);
+    iniciarBorrado(async () => {
+      const resultado = await borrarInvitado(fila.slug);
+      if (resultado.error) setError(resultado.error);
+    });
+  }
 
   function editar() {
     setEstado(fila.estado);
@@ -95,7 +106,11 @@ export default function FilaInvitado({ fila }: { fila: FilaPanel }) {
         <span className="panel-enlace">
           <button type="button" className="panel-copiar" onClick={editar}>Editar</button>
           <CopiarEnlace slug={fila.slug} />
+          <button type="button" className="panel-copiar panel-borrar" onClick={borrar} disabled={borrando}>
+            {borrando ? "Borrando…" : "Borrar"}
+          </button>
         </span>
+        {error && <p role="alert" className="panel-edicion-error">{error}</p>}
       </td>
     </tr>
   );

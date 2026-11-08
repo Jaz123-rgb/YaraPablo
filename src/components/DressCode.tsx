@@ -38,7 +38,7 @@ export default function DressCode() {
         <MarcoVictoriano>
           <Image
             src={ejemploEllas}
-            alt="Collage de vestidos formales largos y midi en amarillo, rosa, azul y verde"
+            alt="Paletas de color y vestidos largos en tonos verde, amarillo, azul y rosa"
             placeholder="blur"
             sizes="(max-width: 800px) 100vw, 340px"
             className="dresscode-sub-img"
@@ -59,7 +59,7 @@ export default function DressCode() {
         <MarcoVictoriano>
           <Image
             src={ejemploEllos}
-            alt="Collage de trajes y camisas para hombre en beige, verde salvia y café"
+            alt="Paletas de color y trajes para hombre en tonos verde, beige, azul y rosa"
             placeholder="blur"
             sizes="(max-width: 800px) 100vw, 340px"
             className="dresscode-sub-img"
