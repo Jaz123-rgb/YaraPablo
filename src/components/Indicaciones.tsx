@@ -2,6 +2,10 @@ import { invitacion } from "@/content/invitacion";
 
 export default function Indicaciones() {
   const items = [
+    {
+      titulo: "Sin niños",
+      texto: "Deseamos contar con su presencia en la boda y a los niños les deseamos dulces sueños en casa.",
+    },
     { titulo: "Valet parking", texto: "Sin costo, para que llegues sin preocupaciones." },
     { titulo: "Pase personal", texto: "Tu invitación es válida para el número de lugares indicado." },
     {

@@ -15,7 +15,6 @@ export default function Celebracion() {
           sizes="300px"
           className="celebracion-img"
         />
-        <p className="serif">(y todo lo<br />que viene)</p>
       </div>
       <p className="celebracion-quote serif">
         Con la bendición de nuestros padres, tenemos el honor de invitarte a celebrar el día en que

@@ -355,7 +355,7 @@ input:focus, textarea:focus, select:focus {
 .indicaciones { gap: 28px; }
 .indicaciones .body-text { max-width: 600px; }
 .indicaciones .cards { max-width: 960px; }
-.indicaciones .card { flex-basis: 260px; border: 1px solid rgba(42, 38, 34, 0.4); padding: 32px 24px; }
+.indicaciones .card { flex-basis: 200px; border: 1px solid rgba(42, 38, 34, 0.4); padding: 32px 24px; }
 .indicaciones .card h3 { font-size: 22px; }
 
 /* ---------- Regalos ---------- */
